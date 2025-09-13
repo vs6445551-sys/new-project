@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Daily Journal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <nav class="mb-3">
+        <a href="{{ url_for('index') }}" class="btn btn-primary">Home</a>
+        <a href="{{ url_for('add_entry') }}" class="btn btn-success">Add Entry</a>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{category}}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>
+
+{% extends 'base.html' %}
+{% block content %}
+<h2>My Journal</h2>
+
+<form method="get" class="mb-3">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search..." class="form-control">
+</form>
+
+{% for entry in entries %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ entry.title }}</h5>
+        <p class="card-text">{{ entry.content }}</p>
+        <small class="text-muted">Created: {{ entry.date_created.strftime('%Y-%m-%d %H:%M') }}</small>
+        <div class="mt-2">
+            <a href="{{ url_for('edit_entry', id=entry.id) }}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{{ url_for('delete_entry', id=entry.id) }}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<p>No journal entries found.</p>
+{% endfor %}
+{% endblock %}
+{% extends 'base.html' %}
+{% block content %}
+<h2>Add New Entry</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" name="title" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Content</label>
+        <textarea name="content" class="form-control" rows="4"></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}
+ {% extends 'base.html' %}
+{% block content %}
+<h2>Edit Entry</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Title</label>
+        <input type="text" name="title" value="{{ entry.title }}" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>Content</label>
+        <textarea name="content" class="form-control" rows="4">{{ entry.content }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-warning">Update</button>
+</form>
+{% endblock %}

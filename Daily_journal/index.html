@@ -1,0 +1,21 @@
+
+<h2>My Journal</h2>
+
+<form method="get" class="mb-3">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search..." class="form-control">
+</form>
+
+{% for entry in entries %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ entry.title }}</h5>
+        <p class="card-text">{{ entry.content }}</p>
+        <small class="text-muted">Created: {{ entry.date_created.strftime('%Y-%m-%d %H:%M') }}</small>
+        <div class="mt-2">
+            <a href="{{ url_for('edit_entry', id=entry.id) }}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{{ url_for('delete_entry', id=entry.id) }}" class="btn btn-sm btn-danger">Delete</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<p>No journal entries found.</p>
